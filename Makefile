@@ -2,6 +2,9 @@ OBJS := mkbootimg unpackbootimg
 
 all: $(OBJS)
 
+clean:
+	rm -f $(OBJS)
+
 mkbootimg:
 	gcc -O2 -Wall -Wextra -o mkbootimg mkbootimg.c -lcrypto
 
