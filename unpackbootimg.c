@@ -6,6 +6,7 @@
 #include <errno.h>
 #include <limits.h>
 #include <libgen.h>
+#include <sys/stat.h>
 
 #include "bootimg.h"
 
@@ -54,6 +55,7 @@ int main(int argc, char** argv)
     char* directory = "./";
     char* filename = NULL;
     int pagesize = 0;
+    int ret;
 
     argc--;
     argv++;
@@ -77,12 +79,27 @@ int main(int argc, char** argv)
         return usage();
     }
     
+    /* Check if output directory exists, otherwise try to create it */
+    struct stat sb;
+    if (stat(directory, &sb) == 0) {
+        if (!S_ISDIR(sb.st_mode) || access(directory, W_OK) != 0) {
+            fprintf(stderr, "Error: output path is not a writable directory!\n");
+            return -1;
+        }
+    } else { /* Try to create directory */
+        ret = mkdir(directory, 0777);
+        if (ret != 0) {
+            perror("Error creating output directory");
+            return -1;
+        }
+    }
+
     int total_read = 0;
     FILE* f = fopen(filename, "rb");
     boot_img_hdr header;
 
     //printf("Reading header...\n");
-    int i, ret;
+    int i;
     for (i = 0; i <= 512; i++) {
         fseek(f, i, SEEK_SET);
         ret = fread(tmp, BOOT_MAGIC_SIZE, 1, f);
