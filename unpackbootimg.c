@@ -15,7 +15,7 @@ int read_padding(FILE* f, unsigned itemsize, int pagesize)
 {
     byte* buf = (byte*)malloc(sizeof(byte) * pagesize);
     unsigned pagemask = pagesize - 1;
-    unsigned count;
+    unsigned count, ret;
 
     if((itemsize & pagemask) == 0) {
         free(buf);
@@ -24,7 +24,10 @@ int read_padding(FILE* f, unsigned itemsize, int pagesize)
 
     count = pagesize - (itemsize & pagemask);
 
-    fread(buf, count, 1, f);
+    ret = fread(buf, count, 1, f);
+    if (ret != 1) {
+        fprintf(stderr, "Warning: fread padding returned %d (expected 1)\n", ret);
+    }
     free(buf);
     return count;
 }
@@ -79,10 +82,13 @@ int main(int argc, char** argv)
     boot_img_hdr header;
 
     //printf("Reading header...\n");
-    int i;
+    int i, ret;
     for (i = 0; i <= 512; i++) {
         fseek(f, i, SEEK_SET);
-        fread(tmp, BOOT_MAGIC_SIZE, 1, f);
+        ret = fread(tmp, BOOT_MAGIC_SIZE, 1, f);
+        if (ret != 1) {
+            fprintf(stderr, "Warning: fread tmp returned %d (expected 1)\n", ret);
+        }
         if (memcmp(tmp, BOOT_MAGIC, BOOT_MAGIC_SIZE) == 0)
             break;
     }
@@ -94,7 +100,10 @@ int main(int argc, char** argv)
     fseek(f, i, SEEK_SET);
     printf("Android magic found at: %d\n", i);
 
-    fread(&header, sizeof(header), 1, f);
+    ret = fread(&header, sizeof(header), 1, f);
+    if (ret != 1) {
+        fprintf(stderr, "Warning: fread header returned %d (expected 1)\n", ret);
+    }
     printf("BOARD_KERNEL_CMDLINE %s\n", header.cmdline);
     printf("BOARD_KERNEL_BASE %08x\n", header.kernel_addr - 0x00008000);
     printf("BOARD_PAGE_SIZE %d\n", header.page_size);
@@ -131,7 +140,10 @@ int main(int argc, char** argv)
     FILE *k = fopen(tmp, "wb");
     byte* kernel = (byte*)malloc(header.kernel_size);
     //printf("Reading kernel...\n");
-    fread(kernel, header.kernel_size, 1, f);
+    ret = fread(kernel, header.kernel_size, 1, f);
+    if (ret != 1) {
+        fprintf(stderr, "Warning: fread kernel returned %d (expected 1)\n", ret);
+    }
     total_read += header.kernel_size;
     fwrite(kernel, header.kernel_size, 1, k);
     fclose(k);
@@ -144,7 +156,10 @@ int main(int argc, char** argv)
     FILE *r = fopen(tmp, "wb");
     byte* ramdisk = (byte*)malloc(header.ramdisk_size);
     //printf("Reading ramdisk...\n");
-    fread(ramdisk, header.ramdisk_size, 1, f);
+    ret = fread(ramdisk, header.ramdisk_size, 1, f);
+    if (ret != 1) {
+        fprintf(stderr, "Warning: fread ramdisk returned %d (expected 1)\n", ret);
+    }
     total_read += header.ramdisk_size;
     fwrite(ramdisk, header.ramdisk_size, 1, r);
     fclose(r);
