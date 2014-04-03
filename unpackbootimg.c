@@ -106,7 +106,7 @@ int main(int argc, char** argv)
     //printf("cmdline...\n");
     sprintf(tmp, "%s/%s", directory, basename(filename));
     strcat(tmp, "-cmdline");
-    write_string_to_file(tmp, header.cmdline);
+    write_string_to_file(tmp, (char *)header.cmdline);
     
     //printf("base...\n");
     sprintf(tmp, "%s/%s", directory, basename(filename));
