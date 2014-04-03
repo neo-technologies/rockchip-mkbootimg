@@ -183,7 +183,7 @@ int main(int argc, char **argv)
         return usage();
     }
 
-    strcpy(hdr.name, board);
+    strcpy((char*)hdr.name, board);
 
     memcpy(hdr.magic, BOOT_MAGIC, BOOT_MAGIC_SIZE);
 
