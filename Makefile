@@ -5,10 +5,10 @@ all: $(OBJS)
 clean:
 	rm -f $(OBJS)
 
-mkbootimg:
+mkbootimg: mkbootimg.c
 	gcc -O2 -Wall -Wextra -o mkbootimg mkbootimg.c -lcrypto
 
-unpackbootimg:
+unpackbootimg: unpackbootimg.c
 	gcc -O2 -Wall -Wextra -o unpackbootimg unpackbootimg.c
 
 install:
