@@ -11,6 +11,33 @@ Build and install:
 
 # Usage
 
+## afptool
+```
+USAGE:
+	afptool <-pack|-unpack> <Src> <Dest>
+Example:
+	afptool -pack xxx update.img	Pack files
+	afptool -unpack update.img xxx	unpack files
+```
+
+## img_maker
+```
+USAGE:
+img_maker [chiptype] [loader] [major ver] [minor ver] [subver] [old image] [out image]
+
+Example:
+img_maker -rk30 Loader.bin 1 0 23 rawimage.img rkimage.img 	RK30 board
+img_maker -rk31 Loader.bin 4 0 4 rawimage.img rkimage.img 	RK31 board
+
+
+Options:
+[chiptype]:
+	-rk29
+	-rk30
+	-rk31
+```
+
+## mkbootimg
 ```
 mkbootimg
        --kernel <filename>
@@ -23,6 +50,8 @@ mkbootimg
        [ --ramdiskaddr <address> ]
        -o|--output <filename>
 ```
+
+## unpackbootimg
 ```
 unpackbootimg
 	-i|--input boot.img
