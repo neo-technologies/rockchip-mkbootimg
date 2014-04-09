@@ -567,7 +567,7 @@ int pack_update(const char* srcdir, const char* dstfile) {
 		import_package(fp, &header.parts[i], header.parts[i].filename);
 	}
 
-	memcpy(header.magic, "RKAF", sizeof(header.magic));
+	memcpy(header.magic, RKAFP_MAGIC, sizeof(header.magic));
 	strcpy(header.manufacturer, package_image.manufacturer);
 	strcpy(header.model, package_image.machine_model);
 	strcpy(header.id, package_image.machine_id);
