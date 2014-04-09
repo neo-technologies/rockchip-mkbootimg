@@ -1,9 +1,12 @@
-OBJS := mkbootimg unpackbootimg img_maker
+OBJS := afptool img_maker mkbootimg unpackbootimg
 
 all: $(OBJS)
 
 clean:
 	rm -f $(OBJS)
+
+afptool: afptool.c
+	gcc -O2 -Wall -Wextra -o afptool afptool.c -lcrypto
 
 img_maker: img_maker.c
 	gcc -O2 -Wall -Wextra -o img_maker img_maker.c -lcrypto
