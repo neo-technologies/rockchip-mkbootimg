@@ -429,6 +429,11 @@ int get_packages(const char *fname)
 			--endp;
 		endp[1] = 0;
 
+		// skip UTF-8 BOM
+		if (startp[0] == (char)0xEF && startp[1] == (char)0xBB
+		 && startp[2] == (char)0xBF)
+			startp += 3;
+
 		if (*startp == '#' || *startp == 0)
 			continue;
 
