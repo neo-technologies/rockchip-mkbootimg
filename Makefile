@@ -1,21 +1,25 @@
-OBJS := afptool img_maker mkbootimg unpackbootimg
+CC      ?= gcc
+CFLAGS  ?= -O2 -Wall -Wextra
+LDFLAGS ?= -lcrypto
+PREFIX  ?= usr/local
 
-all: $(OBJS)
+TARGETS = afptool img_maker mkbootimg unpackbootimg
+DEPS    = Makefile rkafp.h rkcrc.h
+
+all: $(TARGETS)
+
+%: %.c $(COMMON) $(DEPS)
+	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
+
+install: $(TARGETS)
+	install -d -m 0755 $(DESTDIR)/$(PREFIX)/bin
+	install -D -m 0755 $(TARGETS) $(DESTDIR)/$(PREFIX)/bin
+
+.PHONY: clean uninstall
 
 clean:
-	rm -f $(OBJS)
+	rm -f $(TARGETS)
 
-afptool: afptool.c
-	gcc -O2 -Wall -Wextra -o afptool afptool.c -lcrypto
-
-img_maker: img_maker.c
-	gcc -O2 -Wall -Wextra -o img_maker img_maker.c -lcrypto
-
-mkbootimg: mkbootimg.c
-	gcc -O2 -Wall -Wextra -o mkbootimg mkbootimg.c -lcrypto
-
-unpackbootimg: unpackbootimg.c
-	gcc -O2 -Wall -Wextra -o unpackbootimg unpackbootimg.c
-
-install:
-	cp $(OBJS) /usr/local/bin
+uninstall:
+	cd $(DESTDIR)/$(PREFIX)/bin
+	rm -f $(TARGETS)
