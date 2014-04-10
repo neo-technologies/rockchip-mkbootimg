@@ -536,6 +536,12 @@ int pack_update(const char* srcdir, const char* dstfile) {
 	printf("------ PACKAGE ------\n");
 	memset(&header, 0, sizeof(header));
 
+	fp = fopen(dstfile, "wb+");
+	if (!fp) {
+		printf("Can't open destination file \"%s\": %s\n", dstfile, strerror(errno));
+		return -1;
+	}
+
 	if (chdir(srcdir))
 		return -1;
 
@@ -544,13 +550,6 @@ int pack_update(const char* srcdir, const char* dstfile) {
 
 	if (get_packages("package-file"))
 		return -1;
-
-	fp = fopen(dstfile, "wb+");
-	if (!fp)
-	{
-		printf("Can't open file \"%s\": %s\n", dstfile, strerror(errno));
-		goto pack_failed;
-	}
 
 	fwrite(&header, sizeof(header), 1, fp);
 
@@ -594,13 +593,6 @@ int pack_update(const char* srcdir, const char* dstfile) {
 	printf("------ OK ------\n");
 
 	return 0;
-
-pack_failed:
-	if (fp)
-	{
-		fclose(fp);
-	}
-	return -1;
 }
 
 void usage(const char *appname) {
