@@ -59,3 +59,18 @@ unpackbootimg
 	[ -p|--pagesize <size-in-hexadecimal> ]
 
 ```
+
+## mkrootfs
+```
+Usage: mkrootfs directory size
+
+    directory   Directory used for the creation of the ext4 rootfs image
+    size        Image size in 'dd' format (eg. 256M, 512M, 1G, etc.)
+```
+
+## mkupdate
+```
+Usage: mkupdate directory
+
+    directory must contain package-file with bootloader, parameter and image files
+```
