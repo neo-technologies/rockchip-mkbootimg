@@ -4,6 +4,7 @@ LDFLAGS ?= -lcrypto
 PREFIX  ?= usr/local
 
 TARGETS = afptool img_maker mkbootimg unpackbootimg
+SCRIPTS = mkrootfs mkupdate
 DEPS    = Makefile rkafp.h rkcrc.h
 
 all: $(TARGETS)
@@ -14,6 +15,7 @@ all: $(TARGETS)
 install: $(TARGETS)
 	install -d -m 0755 $(DESTDIR)/$(PREFIX)/bin
 	install -D -m 0755 $(TARGETS) $(DESTDIR)/$(PREFIX)/bin
+	install -D -m 0755 $(SCRIPTS) $(DESTDIR)/$(PREFIX)/bin
 
 .PHONY: clean uninstall
 
@@ -21,5 +23,5 @@ clean:
 	rm -f $(TARGETS)
 
 uninstall:
-	cd $(DESTDIR)/$(PREFIX)/bin
-	rm -f $(TARGETS)
+	cd $(DESTDIR)/$(PREFIX)/bin && rm -f $(TARGETS)
+	cd $(DESTDIR)/$(PREFIX)/bin && rm -f $(SCRIPTS)

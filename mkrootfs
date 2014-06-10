@@ -1,0 +1,29 @@
+#!/bin/sh
+
+# Copyright (C) 2014 NEO-Technologies
+# Author: Julien Chauveau <julien.chauveau@neo-technologies.fr>
+
+PROG=$(basename $0)
+
+if [ $# != 2 -o ! -d $1 ]; then
+  cat << EOF
+Usage: $PROG directory size
+
+    directory   Directory used for the creation of the ext4 rootfs image
+    size        Image size in 'dd' format (eg. 256M, 512M, 1G, etc.)
+EOF
+  exit 1
+fi
+
+ROOT=$(realpath $1)
+TEMP=$(tempfile)
+
+echo "\n***** Creating $ROOT.img (size: $2) *****\n"
+
+rm $TEMP && mkdir $TEMP
+dd if=/dev/zero of=$ROOT.img bs=1 count=0 seek=$2
+mkfs.ext4 -F -m 0 -L linuxroot $ROOT.img
+sudo mount -o loop $ROOT.img $TEMP
+sudo cp -a $ROOT/* $TEMP
+sudo umount $TEMP
+rmdir $TEMP

@@ -1,0 +1,43 @@
+#!/bin/sh
+
+# Copyright (C) 2014 NEO-Technologies
+# Author: Julien Chauveau <julien.chauveau@neo-technologies.fr>
+
+PROG=$(basename $0)
+
+if [ $# != 1 -o ! -d $1 ]; then
+  echo "Usage: $PROG <directory>"
+  exit 1
+fi
+
+ROOT=$(realpath $1)
+
+if [ ! -f "$ROOT/package-file" ]; then
+  echo "Error: package-file not found!"
+  exit 1
+fi
+
+PARAM=`grep parameter $ROOT/package-file | cut -f2 | tr -d "\r\n"`
+
+if [ ! -f "$ROOT/$PARAM" ]; then
+  echo "Error: parameter not found!"
+  exit 1
+fi
+
+LOADER=`grep bootloader $ROOT/package-file | cut -f2 | tr -d "\r\n"`
+
+if [ ! -f "$ROOT/$LOADER" ]; then
+  echo "Error: bootloader not found!"
+  exit 1
+fi
+
+FIRMWARE=`grep FIRMWARE_VER $ROOT/$PARAM | cut -f2 -d: | tr -d "\r\n"`
+
+DATE=`date +%Y%m%d`
+
+echo "\n***** Creating $ROOT-$DATE-update.img (version: $FIRMWARE) *****\n"
+
+TEMP=$(tempfile)
+afptool -pack "$ROOT" $TEMP
+img_maker -rk31 "$ROOT/$LOADER" 1 0 0 $TEMP "$ROOT-$DATE-update.img"
+rm -f $TEMP
