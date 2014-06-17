@@ -28,6 +28,7 @@ img_maker [chiptype] [loader] [major ver] [minor ver] [subver] [old image] [out 
 Example:
 img_maker -rk30 Loader.bin 1 0 23 rawimage.img rkimage.img 	RK30 board
 img_maker -rk31 Loader.bin 4 0 4 rawimage.img rkimage.img 	RK31 board
+img_maker -rk32 Loader.bin 4 4 2 rawimage.img rkimage.img 	RK32 board
 
 
 Options:
@@ -35,6 +36,7 @@ Options:
 	-rk29
 	-rk30
 	-rk31
+	-rk32
 ```
 
 ## mkbootimg
