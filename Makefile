@@ -4,7 +4,7 @@ LDFLAGS ?= -lcrypto
 PREFIX  ?= usr/local
 
 TARGETS = afptool img_maker mkbootimg unpackbootimg
-SCRIPTS = mkrootfs mkupdate
+SCRIPTS = mkrootfs mkupdate mkcpiogz unmkcpiogz
 DEPS    = Makefile rkafp.h rkcrc.h
 
 all: $(TARGETS)

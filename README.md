@@ -76,3 +76,13 @@ Usage: mkupdate directory
 
     directory must contain package-file with bootloader, parameter and image files
 ```
+
+## mkcpiogz
+```
+Usage: mkcpiogz directoty
+```
+
+## unmkcpiogz
+```
+Usage: unmkcpiogz initramfs.cpio.gz
+```

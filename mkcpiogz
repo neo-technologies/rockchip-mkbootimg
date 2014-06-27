@@ -1,0 +1,18 @@
+#!/bin/sh
+
+# Create initramfs.cpio.gz
+# Author: Julien Chauveau <julien.chauveau@neo-technologies.fr>
+
+# Usage: mkcpiogz <directory>
+
+if [ $# != 1 -o ! -d $1 ]; then
+  echo "Usage: ${0##*/} <directory>" ; exit 1
+fi
+
+DIR=$(realpath $1)
+IMG=$DIR.cpio.gz
+
+cd $DIR
+sudo sh -c "find . | cpio -H newc -o | gzip -9 > $IMG"
+
+echo "Archive created: $IMG"
