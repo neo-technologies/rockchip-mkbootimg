@@ -53,13 +53,13 @@ mkbootimg
        -o|--output <filename>
 ```
 
-## unpackbootimg
+## unmkbootimg
 ```
-unpackbootimg
-	-i|--input boot.img
-	[ -o|--output output_directory]
-	[ -p|--pagesize <size-in-hexadecimal> ]
-
+usage: unmkbootimg
+       [ --kernel <filename> ]
+       [ --ramdisk <filename> ]
+       [ --second <2ndbootloader-filename> ]
+       -i|--input <filename>
 ```
 
 ## mkrootfs
