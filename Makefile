@@ -14,8 +14,8 @@ all: $(TARGETS)
 
 install: $(TARGETS)
 	install -d -m 0755 $(DESTDIR)/$(PREFIX)/bin
-	install -D -m 0755 $(TARGETS) $(DESTDIR)/$(PREFIX)/bin
-	install -D -m 0755 $(SCRIPTS) $(DESTDIR)/$(PREFIX)/bin
+	install -m 0755 $(TARGETS) $(DESTDIR)/$(PREFIX)/bin
+	install -m 0755 $(SCRIPTS) $(DESTDIR)/$(PREFIX)/bin
 
 .PHONY: clean uninstall
 
