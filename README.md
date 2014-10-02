@@ -79,7 +79,7 @@ Usage: mkupdate directory
 
 ## mkcpiogz
 ```
-Usage: mkcpiogz directoty
+Usage: mkcpiogz directory
 ```
 
 ## unmkcpiogz
