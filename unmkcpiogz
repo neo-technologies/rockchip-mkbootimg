@@ -10,7 +10,8 @@ if [ $# != 1 -o ! -f $1 ]; then
 fi
 
 IMG=$(realpath $1)
-DIR=${IMG%%.*}
+DIR=${IMG%.cpio.gz}
+DIR=${DIR%.img}
 
 if [ -e $DIR ]; then
   echo "Error: $DIR already exists" ; exit 1
