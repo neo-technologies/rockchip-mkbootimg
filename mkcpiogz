@@ -5,14 +5,14 @@
 
 # Usage: mkcpiogz <directory>
 
-if [ $# != 1 -o ! -d $1 ]; then
+if [ $# != 1 ] || [ ! -d $1 ]; then
   echo "Usage: ${0##*/} <directory>" ; exit 1
 fi
 
-DIR=$(realpath $1)
+cd $1
+DIR=$(pwd)
 IMG=$DIR.cpio.gz
 
-cd $DIR
 sudo sh -c "find . | cpio -H newc -o | gzip -9 > $IMG"
 
 echo "Archive created: $IMG"

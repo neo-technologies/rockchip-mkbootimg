@@ -5,13 +5,19 @@
 
 # Usage: unmkcpiogz <initramfs.cpio.gz>
 
-if [ $# != 1 -o ! -f $1 ]; then
+if [ $# != 1 ] || [ ! -f $1 ]; then
   echo "Usage: ${0##*/} <initramfs.cpio.gz>" ; exit 1
 fi
 
-IMG=$(realpath $1)
+IMG=$(cd $(dirname $1); pwd)/$(basename $1)
 DIR=${IMG%.cpio.gz}
 DIR=${DIR%.img}
+
+( gunzip -t $IMG ) || exit 1
+
+if [ "$DIR" = "$IMG" ]; then
+  DIR="$IMG-extracted"
+fi
 
 if [ -e $DIR ]; then
   echo "Error: $DIR already exists" ; exit 1
