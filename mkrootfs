@@ -5,7 +5,7 @@
 
 PROG=$(basename $0)
 
-if [ $# != 2 -o ! -d $1 ]; then
+if [ $# != 2 ] || [ ! -d $1 ]; then
   cat << EOF
 Usage: $PROG directory size
 
@@ -15,7 +15,7 @@ EOF
   exit 1
 fi
 
-ROOT=$(realpath $1)
+ROOT=$(cd $1; pwd)
 TEMP=$(tempfile)
 
 echo "\n***** Creating $ROOT.img (size: $2) *****\n"

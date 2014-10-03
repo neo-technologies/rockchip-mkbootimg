@@ -5,12 +5,12 @@
 
 PROG=$(basename $0)
 
-if [ $# != 1 -o ! -d $1 ]; then
+if [ $# != 1 ] || [ ! -d $1 ]; then
   echo "Usage: $PROG <directory>"
   exit 1
 fi
 
-ROOT=$(realpath $1)
+ROOT=$(cd $1; pwd)
 
 if [ ! -f "$ROOT/package-file" ]; then
   echo "Error: package-file not found!"
