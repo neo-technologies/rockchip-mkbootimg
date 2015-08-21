@@ -65,6 +65,10 @@ int usage(void)
             "       [ --board <boardname> ]\n"
             "       [ --base <address> ]\n"
             "       [ --pagesize <pagesize> ]\n"
+            "       [ --kernel_offset <address> ]\n"
+            "       [ --ramdisk_offset <address> ]\n"
+            "       [ --second_offset <address> ]\n"
+            "       [ --tags_offset <address> ]\n"
             "       [ --ramdiskaddr <address> ]\n"
             "       -o|--output <filename>\n"
             );
@@ -142,10 +146,19 @@ int main(int argc, char **argv)
             cmdline = val;
         } else if(!strcmp(arg, "--base")) {
             unsigned base = strtoul(val, 0, 16);
+            /* Offsets match stock Android mkbootimg, but differ from defaults above */
             hdr.kernel_addr =  base + 0x00008000;
             hdr.ramdisk_addr = base + 0x01000000;
             hdr.second_addr =  base + 0x00F00000;
             hdr.tags_addr =    base + 0x00000100;
+	} else if(!strcmp(arg, "--kernel_offset")) {
+	    hdr.kernel_addr = strtoul(val, 0, 16);
+	} else if(!strcmp(arg, "--ramdisk_offset")) {
+	    hdr.ramdisk_addr = strtoul(val, 0, 16);
+	} else if(!strcmp(arg, "--second_offset")) {
+	    hdr.second_addr = strtoul(val, 0, 16);
+	} else if(!strcmp(arg, "--tags_offset")) {
+	    hdr.tags_addr = strtoul(val, 0, 16);
         } else if(!strcmp(arg, "--ramdiskaddr")) {
             hdr.ramdisk_addr = strtoul(val, 0, 16);
         } else if(!strcmp(arg, "--board")) {
