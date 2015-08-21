@@ -178,26 +178,41 @@ int main(int argc, char **argv)
     /* Ideally, we'd also check the SHA sums here */
 
     printf("\nTo rebuild this boot image, you can use the command:\n");
-    printf("  mkbootimg --base 0 --pagesize %d ", hdr->page_size);
+
+    /* MUST MATCH WITH THE OFFSETS CALCULATED IN mkbootimg when using --base !! */
+    unsigned base = hdr->kernel_addr - 0x00008000;
+
+    printf("  mkbootimg --base 0x%08x --pagesize %d ", base, hdr->page_size);
     if(hdr->name[0] != 0) {
         printf("--board %s ", hdr->name);
     }
-    printf("--kernel_offset 0x%08x --ramdisk_offset 0x%08x ",
-        hdr->kernel_addr, hdr->ramdisk_addr);
-    printf("--second_offset 0x%08x --tags_offset 0x%08x ",
-         hdr->second_addr, hdr->tags_addr);
-    if(hdr->cmdline[0] != 0) {
+
+    /* Unneeded if we print out base */
+    /* printf("--kernel_offset 0x%08x ", hdr->kernel_addr); */
+
+    /* MUST MATCH WITH THE OFFSETS CALCULATED IN mkbootimg when using --base !! */
+    /* Only print out commandline options if the offsets cannot be derived from base */
+    if(hdr->ramdisk_addr != base + 0x01000000)
+    	printf("--ramdisk_offset 0x%08x ", hdr->ramdisk_addr);
+
+    if(hdr->second_addr != base + 0x00F00000)
+	printf("--second_offset 0x%08x ", hdr->second_addr);
+
+    if(hdr->tags_addr != base + 0x00000100)
+	printf("--tags_offset 0x%08x ", hdr->tags_addr);
+
+    if(hdr->cmdline[0] != 0)
         printf("--cmdline '%s%s' ", hdr->cmdline, hdr->extra_cmdline);
-    }
-    if(hdr->kernel_size != 0) {
+
+    if(hdr->kernel_size != 0)
         printf("--kernel %s ", kernel_fn);
-    }
-    if(hdr->ramdisk_size != 0) {
+
+    if(hdr->ramdisk_size != 0)
         printf("--ramdisk %s ", ramdisk_fn);
-    }
-    if(hdr->second_size != 0) {
+
+    if(hdr->second_size != 0)
         printf("--second %s ", second_fn);
-    }
+
     printf("-o %s\n", bootimg);
 
     free(file_data);
