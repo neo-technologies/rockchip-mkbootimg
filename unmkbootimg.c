@@ -201,13 +201,15 @@ int main(int argc, char **argv)
     if(res != 0 || idlen != SHA_DIGEST_LENGTH)
     {
         int i;
+	unsigned char *p = (unsigned char *) hdr->id;
+
     	printf("\nSHA1 HASH MISMATCH!\n");
     	printf("  Expected : ");
     	for(i=0;i<SHA_DIGEST_LENGTH;++i)
     	  printf("%02x", sha[i]);
     	printf("\n  Got      : ");
     	for(i=0;i<idlen;++i)
-    	  printf("%02x", sha[i]);
+    	  printf("%02x", p[i]);
 	printf("\n\n");    	
     }
 
