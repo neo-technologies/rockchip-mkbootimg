@@ -22,6 +22,8 @@
 #include <fcntl.h>
 #include <errno.h>
 
+#include <openssl/sha.h>
+
 #include "bootimg.h"
 
 static void *load_file(const char *fn, unsigned *_sz)
@@ -94,6 +96,12 @@ int main(int argc, char **argv)
     char *bootimg = 0;
     unsigned offset;
 
+    SHA_CTX ctx;
+    unsigned char sha[SHA_DIGEST_LENGTH];
+    void* kernel_data = 0;
+    void* ramdisk_data = 0;
+    void* second_data = 0;
+
     argc--;
     argv++;
 
@@ -140,7 +148,7 @@ int main(int argc, char **argv)
 
     if(hdr->kernel_size != 0) {
         offset = hdr->page_size;
-        if (save_file(kernel_fn, &((char *)file_data)[offset],
+        if (save_file(kernel_fn, (kernel_data = &((char *)file_data)[offset]),
             hdr->kernel_size) != hdr->kernel_size) {
             fprintf(stderr,"error: could not save kernel '%s'\n", kernel_fn);
             return 1;
@@ -152,7 +160,7 @@ int main(int argc, char **argv)
     if(hdr->ramdisk_size != 0) {
         offset = ((hdr->kernel_size + 2*hdr->page_size - 1) /
             hdr->page_size) * hdr->page_size;
-        if (save_file(ramdisk_fn, &((char *)file_data)[offset],
+        if (save_file(ramdisk_fn, (ramdisk_data = &((char *)file_data)[offset]),
             hdr->ramdisk_size) != hdr->ramdisk_size) {
             fprintf(stderr,"error: could not save ramdisk '%s'\n",
                 ramdisk_fn);
@@ -165,7 +173,7 @@ int main(int argc, char **argv)
     if(hdr->second_size != 0) {
         offset = ((hdr->kernel_size + hdr->ramdisk_size
             + 2*hdr->page_size - 1) / hdr->page_size) * hdr->page_size;
-        if (save_file(second_fn, &((char *)file_data)[offset],
+        if (save_file(second_fn, (second_data = &((char *)file_data)[offset]),
             hdr->second_size) != hdr->second_size) {
             fprintf(stderr,"error: could not save second bootloader '%s'\n",
                 second_fn);
@@ -176,6 +184,32 @@ int main(int argc, char **argv)
     }
 
     /* Ideally, we'd also check the SHA sums here */
+    SHA1_Init(&ctx);
+    SHA1_Update(&ctx, kernel_data, hdr->kernel_size);
+    SHA1_Update(&ctx, &hdr->kernel_size, sizeof(hdr->kernel_size));
+    SHA1_Update(&ctx, ramdisk_data, hdr->ramdisk_size);
+    SHA1_Update(&ctx, &hdr->ramdisk_size, sizeof(hdr->ramdisk_size));
+    SHA1_Update(&ctx, second_data, hdr->second_size);
+    SHA1_Update(&ctx, &hdr->second_size, sizeof(hdr->second_size));
+    /* tags_addr, page_size, unused[2], name[], and cmdline[] */
+    SHA1_Update(&ctx, &hdr->tags_addr, 4 + 4 + 4 + 4 + 16 + 512);
+    SHA1_Final(sha, &ctx);
+
+    int idlen = (SHA_DIGEST_LENGTH > sizeof(hdr->id) ? sizeof(hdr->id) : SHA_DIGEST_LENGTH);
+    int res = memcmp(hdr->id, sha, idlen);
+
+    if(res != 0 || idlen != SHA_DIGEST_LENGTH)
+    {
+        int i;
+    	printf("\nSHA1 HASH MISMATCH!\n");
+    	printf("  Expected : ");
+    	for(i=0;i<SHA_DIGEST_LENGTH;++i)
+    	  printf("%02x", sha[i]);
+    	printf("\n  Got      : ");
+    	for(i=0;i<idlen;++i)
+    	  printf("%02x", sha[i]);
+	printf("\n\n");    	
+    }
 
     printf("\nTo rebuild this boot image, you can use the command:\n");
 
