@@ -618,17 +618,23 @@ int main(int argc, char** argv) {
 	}
 
 	if (strcmp(argv[1], "-pack") == 0 && argc == 4) {
-		if (pack_update(argv[2], argv[3]) == 0)
+		if (pack_update(argv[2], argv[3]) == 0) {
 			printf("Pack OK!\n");
-		else
+		} else {
 			printf("Pack failed\n");
+			return 1;
+		}
 	} else if (strcmp(argv[1], "-unpack") == 0 && argc == 4) {
-		if (unpack_update(argv[2], argv[3]) == 0)
+		if (unpack_update(argv[2], argv[3]) == 0) {
 			printf("UnPack OK!\n");
-		else
+		} else {
 			printf("UnPack failed\n");
-	} else
+			return 1;
+		}
+	} else {
 		usage(argv[0]);
+		return 1;
+	}
 
 	return 0;
 }
