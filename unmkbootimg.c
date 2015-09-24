@@ -84,6 +84,11 @@ int usage(void)
     return 1;
 }
 
+static inline unsigned align(unsigned x, unsigned page_size)
+{
+    return (x + (page_size - 1)) & ~(page_size - 1);
+}
+
 int main(int argc, char **argv)
 {
     void *file_data = 0;
@@ -158,8 +163,7 @@ int main(int argc, char **argv)
     }
 
     if(hdr->ramdisk_size != 0) {
-        offset = ((hdr->kernel_size + 2*hdr->page_size - 1) /
-            hdr->page_size) * hdr->page_size;
+        offset = hdr->page_size + align(hdr->kernel_size, hdr->page_size);
         if (save_file(ramdisk_fn, (ramdisk_data = &((char *)file_data)[offset]),
             hdr->ramdisk_size) != hdr->ramdisk_size) {
             fprintf(stderr,"error: could not save ramdisk '%s'\n",
@@ -171,8 +175,8 @@ int main(int argc, char **argv)
     }
 
     if(hdr->second_size != 0) {
-        offset = ((hdr->kernel_size + hdr->ramdisk_size
-            + 2*hdr->page_size - 1) / hdr->page_size) * hdr->page_size;
+        offset = hdr->page_size + align(hdr->kernel_size, hdr->page_size) +
+                align(hdr->ramdisk_size, hdr->page_size);
         if (save_file(second_fn, (second_data = &((char *)file_data)[offset]),
             hdr->second_size) != hdr->second_size) {
             fprintf(stderr,"error: could not save second bootloader '%s'\n",
