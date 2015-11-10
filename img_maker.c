@@ -191,6 +191,7 @@ void usage(const char *appname) {
 			"%s -rk30 Loader.bin 1 0 23 rawimage.img rkimage.img \tRK30 board\n"
 			"%s -rk31 Loader.bin 4 0 4 rawimage.img rkimage.img \tRK31 board\n"
 			"%s -rk32 Loader.bin 4 4 2 rawimage.img rkimage.img \tRK32 board\n"
+                        "%s -rk3368 Loader.bin 5 0 0 rawimage.img rkimage.img \tRK3368 board\n"
 			"\n\n"
 			"Options:\n"
 			"[chiptype]:\n\t-rk29\n\t-rk30\n\t-rk31\n\t-rk32\n", p, p, p, p);
@@ -217,6 +218,10 @@ int main(int argc, char **argv)
 		{
 			pack_rom(0x80, argv[2], atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), argv[6], argv[7]);
 		}
+		else if (strcmp(argv[1], "-rk3368") == 0)
+                  {
+                    pack_rom(0x41, argv[2], atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), argv[6], argv[7]);
+                  }
 		else
 		{
 			usage(argv[0]);
