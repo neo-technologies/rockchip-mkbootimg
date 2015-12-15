@@ -194,7 +194,7 @@ void usage(const char *appname) {
 			"%s -rk3368 Loader.bin 5 0 0 rawimage.img rkimage.img \tRK3368 board\n"
 			"\n\n"
 			"Options:\n"
-			"[chiptype]:\n\t-rk29\n\t-rk30\n\t-rk31\n\t-rk32\n", p, p, p, p);
+			"[chiptype]:\n\t-rk29\n\t-rk30\n\t-rk31\n\t-rk32\n", p, p, p, p, p);
 }
 
 int main(int argc, char **argv)
