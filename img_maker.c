@@ -202,20 +202,21 @@ void usage(const char *appname) {
 
 int main(int argc, char **argv)
 {
+	int ret = 0;
 	// loader, majorver, minorver, subver, oldimage, newimage
 	if (argc == 8)
 	{
 		if (strcmp(argv[1], "-rk29") == 0)
 		{
-			pack_rom(0x50, argv[2], atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), argv[6], argv[7]);
+			ret = pack_rom(0x50, argv[2], atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), argv[6], argv[7]);
 		}
 		else if (strcmp(argv[1], "-rk30") == 0)
 		{
-			pack_rom(0x60, argv[2], atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), argv[6], argv[7]);
+			ret = pack_rom(0x60, argv[2], atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), argv[6], argv[7]);
 		}
 		else if (strcmp(argv[1], "-rk31") == 0)
 		{
-			pack_rom(0x70, argv[2], atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), argv[6], argv[7]);
+			ret = pack_rom(0x70, argv[2], atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), argv[6], argv[7]);
 		}
 		else if (strcmp(argv[1], "-rk3128") == 0)
 		{
@@ -223,7 +224,7 @@ int main(int argc, char **argv)
 		}
 		else if (strcmp(argv[1], "-rk32") == 0)
 		{
-			pack_rom(0x80, argv[2], atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), argv[6], argv[7]);
+			ret = pack_rom(0x80, argv[2], atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), argv[6], argv[7]);
 		}
 		else if (strcmp(argv[1], "-rk3368") == 0)
                   {
@@ -240,5 +241,5 @@ int main(int argc, char **argv)
 		usage(argv[0]);
 	}
 
-	return 0;
+	return ret < 0 ? 1 : 0;
 }
