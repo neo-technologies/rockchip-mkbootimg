@@ -1,6 +1,6 @@
 CC      ?= gcc
-CFLAGS  ?= -O2 -Wall -Wextra
-LDFLAGS ?= -lcrypto
+CFLAGS  ?= -O2 -Wall -Wextra -m32
+LDFLAGS ?= -lcrypto -m32
 PREFIX  ?= usr/local
 
 TARGETS = afptool img_maker mkbootimg unmkbootimg
